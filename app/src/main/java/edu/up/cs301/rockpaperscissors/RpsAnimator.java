@@ -6,14 +6,19 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import edu.up.cs301.animation.Animator;
 
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_UP;
+
 
 /**
  * rock-paper-scissors animation
- * 
+ *
  * @author Steve Vegdahl
  * @version August 2016
  */
@@ -21,9 +26,12 @@ public class RpsAnimator implements Animator {
 
 	// THIS CLAS IS PRESENTLY DUMMIED-UP
 
+
 	// instance variables
-	private int count = 0; // counts the number of logical clock ticks
-	private boolean goBackwards = false; // whether clock is ticking backwards
+
+	ArrayList<rpsObj> RpsList = new ArrayList<>();
+	private rpsObj tempOne;
+	private rpsObj tempTwo;
 
 	/**
 	 * Interval between animation frames: .03 seconds (i.e., about 33 times
@@ -46,45 +54,112 @@ public class RpsAnimator implements Animator {
 	}
 
 	/**
-	 * Tells the animation whether to go backwards.
-	 *
-	 * @param b true iff animation is to go backwards.
-	 */
-	public void goBackwards(boolean b) {
-		// set our instance variable
-		goBackwards = b;
-	}
-
-	/**
 	 * Action to perform on clock tick
 	 *
 	 * @param g the graphics object on which to draw
 	 */
+	public void add(int num) {
+		int type =(int)(Math.random()*3);
+		for (int i = 0; i < num; i++) {
+			float randSizeX = (float) (2 + (230 * Math.random()));
+			float randSizeY = (float) (2 + (230 * Math.random()));
+			float randVelX = (float) (20 * Math.random() - 14);
+			float randVelY = (float) (20 * Math.random() - 14);
+			float randX = (float) (100 + 1500 * Math.random());
+			float randY = (float) (100 + 1000 * Math.random());
+			rpsObj tempAdd;
+			if (type == 0) {
+				tempAdd = new rock(randX, randY, randSizeX, randSizeY, randVelX, randVelY);
+				RpsList.add(tempAdd);
+			}
+			if (type == 1) {
+				tempAdd = new paper(randX, randY, randSizeX, randSizeY, randVelX, randVelY);
+				RpsList.add(tempAdd);
+			}
+			else {
+				tempAdd = new scissors(randX, randY, randSizeX, randSizeY, randVelX, randVelY);
+				RpsList.add(tempAdd);
+			}
+		}
+	}
+	public void onTouch(MotionEvent event) {
+		float x = event.getX();
+		float y = event.getY();
+		if (event.getAction() == ACTION_DOWN || event.getAction() == ACTION_MOVE) {
+			//gravitate(x, y);
+		} else if (event.getAction() == ACTION_UP) {
+			//gravitate(-1, -1);
+		}
+
+	}
 	public void tick(Canvas g) {
-		// bump our count either up or down by one, depending on whether
-		// we are in "backwards mode".
-		if (goBackwards) {
-			count--;
+		int height = g.getHeight();
+		int width = g.getWidth();
+		if(RpsList.size() == 0) {
+			for (int i = 0; i < 20; i++) {
+				add(1);
+			}
 		}
-		else {
-			count++;
+		Paint p = new Paint();
+		if (RpsList.size() > 0) {
+			for (int i = 0; i < RpsList.size(); i++) {
+				tempOne = RpsList.get(i);
+				if (tempOne.getPosX() < 0) {
+					tempOne.setxPos(1);
+					tempOne.bounceX();
+				}
+				if (tempOne.getPosX() + tempOne.getSizeX() > width) {
+					tempOne.setxPos(width - tempOne.getSizeX() - 1);
+					tempOne.bounceX();
+				}
+				if ((tempOne.getPosY() + tempOne.getSizeY() > height)) {
+					tempOne.setyPos(height - tempOne.getSizeY() - 1);
+					tempOne.bounceY();
+				}
+				for (int j = 0; j < RpsList.size(); j++) {
+					tempTwo = RpsList.get(j);
+					if (!tempOne.isDead() && !tempTwo.isDead()) {
+						if(tempOne == tempTwo && overlaps(tempOne, tempTwo)){
+							tempOne.bounceY();
+							tempTwo.bounceY();
+						}
+						if ((tempOne != tempTwo) && overlaps(tempOne, tempTwo)) {
+							if (tempOne instanceof paper && tempTwo instanceof rock) { //Lab taught me this
+								tempTwo =RpsList.get(j);
+								tempTwo.dead();
+								return;
+							}
+							if (tempOne instanceof paper && tempTwo instanceof scissors) {
+								tempOne = RpsList.get(i);
+								tempOne.dead();
+							}
+							if (tempOne instanceof scissors && tempTwo instanceof rock) {
+								tempOne = RpsList.get(i);
+								tempOne.dead();
+							}
+							if (tempOne instanceof scissors && tempTwo instanceof paper) {
+								tempTwo = RpsList.get(j);
+								tempTwo.dead();
+							}
+							if (tempOne instanceof rock && tempTwo instanceof paper) {
+								tempOne = RpsList.get(i);
+								tempOne.dead();
+							}
+							if (tempOne instanceof rock && tempTwo instanceof scissors) {
+								tempTwo = RpsList.get(j);
+								tempTwo.dead();
+							}
+						}
+					}
+
+				}
+				if (!tempOne.isDead()) {
+					tempOne.ticked();
+					tempOne.draw(p, g);
+				}
+			}
 		}
 
-		// Determine the pixel position of our ball.  Multiplying by 15
-		// has the effect of moving 15 pixel per frame.  Modding by minimum
-		// canvas-size dimension (with the appropriate correction if the value
-		// was negative) has the effect of "wrapping around" when we get to
-
-		int wrap = Math.min(g.getWidth(), g.getHeight());
-		// either end
-		int num = (count*15)%wrap;
-		if (num < 0) num += wrap;
-
-		// Draw the ball in the correct position.
-		Paint redPaint = new Paint();
-		redPaint.setColor(Color.RED);
-		g.drawCircle(num, num, 60, redPaint);
-		redPaint.setColor(0xff0000ff);
 	}
 
 	/**
@@ -108,12 +183,25 @@ public class RpsAnimator implements Animator {
 	/**
 	 * reverse the ball's direction when the screen is tapped
 	 */
-	public void onTouch(MotionEvent event)
-	{
-		if (event.getAction() == MotionEvent.ACTION_DOWN)
-		{
-			goBackwards = !goBackwards;
-		}
-	}
 
+	public boolean overlaps(rpsObj t1, rpsObj t2) {
+		if ((t1.getPosX() + t1.getSizeX()) > t2.getPosX() && (t1.getPosX() + t1.getSizeX()) < (t2.getPosX() + t2.getSizeX())) {
+			if (t1.getPosY() > t2.getPosY() && t1.getPosY() < (t2.getPosY() + t2.getSizeY())) {
+				return true;
+			}
+			if ((t1.getPosY() + t1.getSizeY()) > t2.getPosY() && (t1.getPosY() + t1.getSizeY()) < (t2.getPosY() + t2.getSizeY())) {
+				return true;
+			}
+		}
+		if (t1.getPosX() > t2.getPosX() && t1.getPosX() < (t2.getPosX() + t2.getSizeX())) {
+			if (t1.getPosY() > t2.getPosY() && t1.getPosY() < (t2.getPosY() + t2.getSizeY())) {
+				return true;
+			}
+			if ((t1.getPosY() + t1.getSizeY()) > t2.getPosY()
+					&& (t1.getPosY() + t1.getSizeY()) < (t2.getPosY() + t2.getSizeY())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }//class RpsAnimator

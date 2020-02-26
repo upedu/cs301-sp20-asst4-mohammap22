@@ -89,6 +89,7 @@ public class AnimationSurface extends SurfaceView implements OnTouchListener {
 
 		// Initialize the background color paint as instructed by the animator
 		backgroundPaint.setColor(animator.backgroundColor());
+
 	}
 	
 	/**

@@ -6,10 +6,23 @@
     tools:context=".RpsActivity">
 
 
-    <edu.up.cs301.animation.AnimationSurface
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="83dp"
+        android:text="Add Random" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/animationSurface"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <edu.up.cs301.animation.AnimationSurface
+            android:id="@+id/animationSurface"
+            android:layout_width="match_parent"
+            android:layout_height="603dp"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </LinearLayout>
