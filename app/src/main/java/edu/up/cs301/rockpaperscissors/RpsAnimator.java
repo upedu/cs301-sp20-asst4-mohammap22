@@ -63,7 +63,7 @@ public class RpsAnimator implements Animator {
 	public void add(int num) { //this method randomly assigns objects to add to the room
 		for (int i = 0; i < num; i++) { //will add all the same type of object each time
 			int type = (int) (Math.random() * 3); //used to choose which object is going to be added
-			float ranX = (float) (2 + (230 * Math.random())); //random size for x
+			float ranX = (float) (2 + (230 * Math.random()+15)); //random size for x
 			float rVelX = (float) (30 * Math.random() - 14); //random vel
 			float rVelY = (float) (30 * Math.random() - 14); //random vel
 			float randX = (float) (100 + 1500 * Math.random());//and random positions on canvis
@@ -144,27 +144,33 @@ public class RpsAnimator implements Animator {
 					tempTwo = RpsList.get(j);
 					if (!tempOne.isDead() && !tempTwo.isDead()) { //if objects exist
 						if (tempOne instanceof paper && tempTwo instanceof paper && overlaps(tempOne, tempTwo)) { //if they are both paper and overlap
-							if (tempTwo.getxSpeed() > 0 && tempOne.getxSpeed() < 0) {
-								tempOne.bounceY(); //bounce off one another
-								tempOne.bounceX();
-								tempTwo.bounceX();
-								tempTwo.bounceY();
+							if (tempTwo.getxSpeed() > 0 && tempOne.getxSpeed() < 0 || tempTwo.getxSpeed() < 0 && tempOne.getxSpeed() > 0) { //if the x direction speed is opposite
+								if(tempTwo.getySpeed() > 0 && tempOne.getySpeed() < 0 ||tempTwo.getySpeed() < 0 && tempOne.getySpeed() > 0) { //if the y direction speed is opposite
+									tempOne.bounceY(); //bounce off one another
+									tempOne.bounceX();
+									tempTwo.bounceX();
+									tempTwo.bounceY();
+								}
 							}
 						}
 						if (tempOne instanceof rock && tempTwo instanceof rock && overlaps(tempOne, tempTwo)) { //Same thing for rocks
-							if (tempTwo.getxSpeed() > 0 && tempOne.getxSpeed() < 0) {
-								tempOne.bounceY();
-								tempOne.bounceX();
-								tempTwo.bounceX();
-								tempTwo.bounceY();
+							if (tempTwo.getxSpeed() > 0 && tempOne.getxSpeed() < 0 || tempTwo.getxSpeed() < 0 && tempOne.getxSpeed() > 0) {
+								if(tempTwo.getySpeed() > 0 && tempOne.getySpeed() < 0 ||tempTwo.getySpeed() < 0 && tempOne.getySpeed() > 0) {
+									tempOne.bounceY();
+									tempOne.bounceX();
+									tempTwo.bounceX();
+									tempTwo.bounceY();
+								}
 							}
 						}
 						if (tempOne instanceof scissors && tempTwo instanceof scissors && overlaps(tempOne, tempTwo)) {//same for scissors
-							if (tempTwo.getxSpeed() > 0 && tempOne.getxSpeed() < 0) {
-								tempOne.bounceY();
-								tempOne.bounceX();
-								tempTwo.bounceX();
-								tempTwo.bounceY();
+							if (tempTwo.getxSpeed() > 0 && tempOne.getxSpeed() < 0 || tempTwo.getxSpeed() < 0 && tempOne.getxSpeed() > 0) {
+								if(tempTwo.getySpeed() > 0 && tempOne.getySpeed() < 0 ||tempTwo.getySpeed() < 0 && tempOne.getySpeed() > 0) {
+									tempOne.bounceY();
+									tempOne.bounceX();
+									tempTwo.bounceX();
+									tempTwo.bounceY();
+								}
 							}
 						}
 						if ((tempOne != tempTwo) && overlaps(tempOne, tempTwo)) { //now for different kinds of objects

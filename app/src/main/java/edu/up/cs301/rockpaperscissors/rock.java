@@ -23,8 +23,10 @@ public class rock extends rpsObj {
             return;
         }
         Paint paper = objColor;
+        paper.setColor(Color.GRAY);
+        Paint black = objColor;
         paper.setColor(Color.BLACK);
-        c.drawRect(xPos, yPos, xPos+xSize, yPos+ySize, paper); //draws black square for rocks
+       c.drawRect(xPos, yPos, xPos+xSize, yPos+ySize, paper); //draws black square for rocks
 
     }
 }
