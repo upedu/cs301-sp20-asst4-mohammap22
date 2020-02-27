@@ -14,10 +14,10 @@ import android.util.Log;
  * Abstact Class that defines necessary parameters and methods for Paper, Rock, and Scissors
  */
 
-
+//general object for all shapes
 public abstract class rpsObj {
 
-    //instance variables
+    //instance variables for rock, paper, and scissors
     protected float xPos;
     protected float yPos;
     protected float xSize;
@@ -25,6 +25,8 @@ public abstract class rpsObj {
     protected float xSpeed;
     protected float ySpeed;
     protected boolean dead;
+    protected float gravityX;
+    protected float gravityY;
 
     //contructor for subclasses
     public rpsObj() {
@@ -39,16 +41,15 @@ public abstract class rpsObj {
         xSpeed = xSpd;
         ySpeed = ySpd;
         dead = false;
+        gravityX = 0;
+        gravityY = 0;
     }
 
-    //whenever the animator detects that the object hits the left or right wall
-    //it reverses direction and slows down by 10%
 
-    //sets the destroy variable to true to show it's destroyed
+    //variable for object got deleted
     public void dead() {
         dead = true;
     }
-
     //checks to see if the object is destroyed
     public boolean isDead() {
         return dead;
@@ -58,11 +59,11 @@ public abstract class rpsObj {
     public void draw(Paint objColor, Canvas c) {
     }
     public void ticked(){
-        xPos += xSpeed;
+        xPos += xSpeed; //this method moved the shaped around based on its given speed
         yPos += ySpeed;
-
-        ySpeed += 0.8;
-
+        ySpeed += 0.8; //this is for gravity
+        xSpeed += gravityX*10;
+        ySpeed += gravityY*10;
     }
 
     public float getPosX() {
@@ -82,19 +83,35 @@ public abstract class rpsObj {
     }
 
     public void bounceX(){
-        xSpeed = -(float)(0.9*xSpeed);
+        xSpeed =-(float)(0.9*xSpeed); //reduces the speed by 10% every time hits the floor
     }
 
     public void bounceY(){
-        ySpeed = -(float) (0.9*ySpeed);
+        ySpeed =-(float)(0.9*ySpeed); //reduces the speed every time hits a side by 10%
     }
 
-
-    public float getSizeX(){
+    public float getSizeX() {
         return xSize;
     }
     public float getSizeY(){
         return ySize;
+    }
+    public float getySpeed(){
+        return ySpeed;
+    }
+    public float getxSpeed(){
+        return xSpeed;
+    }
+    public void setGravX(float newXGrav){
+        gravityX += newXGrav;
+    }
+
+    public void setGravY(float newYGrav){
+        gravityY += newYGrav;
+    }
+    public void rGrav(){
+        gravityX = 0;
+        gravityY = 0;
     }
 }
 

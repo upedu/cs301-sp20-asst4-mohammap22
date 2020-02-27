@@ -19,13 +19,12 @@ public class rock extends rpsObj {
     // sets a paint, creates a path, and then draws the path and paint
     @Override
     public void draw(Paint objColor, Canvas c) {
-        if(dead){
+        if(dead){//draw nothing if dead
             return;
         }
-        Paint RPaint = objColor;
-        RPaint.setColor(Color.BLACK);
-
-        c.drawCircle(xPos, yPos, xSize, RPaint);
+        Paint paper = objColor;
+        paper.setColor(Color.BLACK);
+        c.drawRect(xPos, yPos, xPos+xSize, yPos+ySize, paper); //draws black square for rocks
 
     }
 }

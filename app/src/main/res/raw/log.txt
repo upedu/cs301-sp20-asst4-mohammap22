@@ -7,4 +7,7 @@ On 2/26/20:
 I was having trouble with checking if images were "colliding" online I found a solution using an equation for finding intersections for squares. You can see these edits in "collide" method.
 
 On 2/26/20:
-I did not understand the general idea of the tick method so I asked my friend and he said use an arrayList, I used a similar method in my tick method. 
+I did not understand the general idea of the tick method so I asked my friend and he said use an arrayList, I used a similar method in my tick method.
+
+On 2/26/20:
+I did not understand gravity so my friend helped me implement the gravity and methods that go along with it

@@ -22,12 +22,13 @@ public class paper extends rpsObj {
     // sets a paint, creates a path, and then draws the path and paint
     @Override
     public void draw(Paint objColor, Canvas c) {
-        if(dead){
+        if(dead){ //if the object is dead, draw nothing
             return;
         }
         Paint paper = objColor;
         paper.setColor(Color.WHITE);
-        c.drawRect(xPos, yPos, xPos+xSize, yPos+ySize, paper);
+        c.drawRect(xPos, yPos, xPos+xSize, yPos+ySize, paper); //draws rectangle for paper(its white)
 
     }
+
 }
